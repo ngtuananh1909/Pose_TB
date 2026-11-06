@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0a22">
+<title>POSE QUEST · Chọn thẻ thử thách</title>
+<style>
+:root{--bg:#0b0a22;--mid:#191438;--panel:#211b42;--line:#423763;--txt:#fbf8ff;--muted:#b5abd5;--pink:#ff5da5;--yellow:#ffe184;--mint:#7af5d4;--purple:#9c7aff}
+*{box-sizing:border-box}
+html{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;background:radial-gradient(ellipse at 85% 0%,#3a235d70,transparent 44%),radial-gradient(ellipse at 8% 55%,#142c5773,transparent 52%),var(--bg);color:var(--txt);min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.wrap{width:min(1240px,calc(100% - 28px));margin:auto}
+.topbar{border-bottom:1px solid #ffffff19;background:#100e26b0;backdrop-filter:blur(14px);position:sticky;top:0;z-index:20}
+.topline{display:flex;align-items:center;justify-content:space-between;padding:12px 0;gap:12px}
+.brand{font-size:1.08rem;font-weight:900;letter-spacing:.06em}
+.brand em{font-style:normal;color:var(--pink)}
+.pill{border:1px solid #79efce77;color:#a5fae3;border-radius:100px;padding:5px 11px;font-size:.68rem;font-weight:800;letter-spacing:.08em;white-space:nowrap}
+
+main{padding:20px 0 46px}
+.eyebrow{text-transform:uppercase;font-size:.68rem;letter-spacing:.2em;color:var(--yellow);font-weight:900}
+.intro h1{font-size:clamp(1.75rem,5.2vw,3.6rem);line-height:1.1;letter-spacing:-.04em;margin:6px 0 8px}
+.intro h1 span{background:linear-gradient(105deg,var(--pink),var(--yellow));color:transparent;-webkit-background-clip:text;background-clip:text}
+.intro p{color:var(--muted);line-height:1.55;margin:0 0 16px;max-width:760px;font-size:.92rem}
+
+.dashboard{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;padding:16px 18px;background:linear-gradient(115deg,#251d45,#19182f);border-radius:18px;border:1px solid #ffffff22;box-shadow:0 14px 40px #05041436}
+.settings{display:flex;gap:12px;flex-wrap:wrap}
+.field{display:grid;gap:6px;min-width:180px;flex:1}
+.field label{font-size:.74rem;color:#c5bcec;font-weight:800}
+.field input,.field select{background:#0c0c26;border:1px solid #554875;color:#fff;border-radius:10px;padding:10px 12px;max-width:100%;min-height:44px}
+.controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;font-weight:900;padding:11px 16px;min-height:44px;transition:filter .2s,transform .15s}
+.btn:not(:disabled):active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(100deg,#ffe080,#ff91ae);color:#251332;border:0;box-shadow:0 6px 18px #ff91ae2e}
+.btn.secondary{color:#f5ecff;background:#342a58;border:1px solid #79648c}
+.btn.ghost{color:#ffe8f6;background:#41233f;border:1px solid #b46a93}
+.btn:hover:not(:disabled){filter:brightness(1.1)}
+
+.stagehead{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.step-title{margin:0;font-size:1.15rem;letter-spacing:-.02em}
+.status{color:var(--mint);font-size:.78rem;font-weight:800;letter-spacing:.03em}
+.stage{position:relative;min-height:420px;overflow:hidden;border-radius:22px;border:1px solid #ffffff24;background:radial-gradient(ellipse at 50% 25%,#4231788c,transparent 62%),repeating-linear-gradient(45deg,#ffffff05 0 1px,transparent 1px 25px),linear-gradient(160deg,#161134,#0e1027);margin-top:10px;isolation:isolate;transition:height .5s ease}
+.stage:before{content:"";position:absolute;inset:10px;border:1px dashed #ffffff14;border-radius:16px;pointer-events:none}
+.corner{position:absolute;color:#ffffff4c;font-size:.68rem;letter-spacing:.12em;font-weight:900;left:20px;top:18px}
+.stage-count{position:absolute;top:18px;right:20px;color:#ffe08e;font-weight:900;font-size:.82rem}
+.center-info{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.78rem;font-weight:800;color:#cfc2e6;text-align:center;pointer-events:none;z-index:2}
+
+.deckcard{width:var(--cardwidth,135px);aspect-ratio:3/4;position:absolute;left:50%;top:50%;border:0;background:transparent;padding:0;perspective:900px;transform:translate(-50%,-50%) translate(var(--x,0px),var(--y,0px)) rotate(var(--angle,0deg));transition:transform .68s cubic-bezier(.18,.72,.17,1),filter .25s;transform-origin:50% 50%;z-index:var(--z,1);will-change:transform}
+.deckcard:not(:disabled):hover{filter:brightness(1.12)}
+.deckcard.ready:not(:disabled):hover{transform:translate(-50%,-50%) translate(var(--x,0px),calc(var(--y,0px) - 6px)) rotate(var(--angle,0deg)) scale(1.04)}
+.facewrap{position:relative;height:100%;width:100%;transform-style:preserve-3d;transition:transform .54s cubic-bezier(.2,.8,.2,1);border-radius:12px;box-shadow:0 10px 22px #05040a88}
+.deckcard.flipped .facewrap{transform:rotateY(180deg)}
+.front,.back{position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid #ffffff66}
+.front{background:radial-gradient(circle at 50% 20%,#c076f9 0%,#8947d1 36%,#42266e 95%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:inset 0 0 30px #ffffff11}
+.front:before{content:"";position:absolute;inset:7px;border:1.2px solid #f0b6ff88;border-radius:9px}
+.front:after{content:"";position:absolute;inset:12px;border:1px dashed #f0d6ff44;border-radius:6px}
+.star{font-size:.9rem;color:var(--yellow);letter-spacing:4px}
+.symbol{font-size:3.2rem;font-weight:950;line-height:1;text-shadow:0 6px 12px #230e4670}
+.frontlabel{font-size:.65rem;letter-spacing:.18em;font-weight:900;margin-top:8px}
+.back{background:#f6f1ff;transform:rotateY(180deg);display:flex;flex-direction:column}
+.back img{height:calc(100% - 32px);width:100%;object-fit:cover;background:#eae8ec}
+.back span{height:32px;display:grid;place-items:center;padding:3px 6px;color:#28193f;font-weight:900;font-size:.68rem;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.selected .front{filter:grayscale(.4) brightness(.45)}
+.selected .front:after{content:'✓ ĐÃ CHỌN';inset:auto 5px 22%;background:#0b1b2bcc;border:1px solid var(--mint);border-radius:8px;padding:6px 2px;font-size:.75rem;letter-spacing:.05em;font-weight:950;text-align:center;color:var(--mint)}
+.selected .facewrap{box-shadow:0 0 0 2px #7af5d46b,0 8px 18px #06021299}
+.deckcard.selected .front{filter:grayscale(.35) brightness(.63)}
+.deckcard.selected .facewrap{transform:rotateY(0)!important}
+.deckcard.selected{cursor:default;opacity:.7}
+.deckcard:disabled{opacity:.65}
+.deckcard.dim{pointer-events:none}
+.sparkle{position:absolute;font-size:1.1rem;pointer-events:none;animation:glimmer 2s infinite alternate}
+.sparkle.one{top:18%;left:10%}
+.sparkle.two{bottom:22%;right:10%;animation-delay:.9s}
+@keyframes glimmer{from{opacity:.2;transform:scale(.8)}to{opacity:.8;transform:scale(1.2)}}
+
+.result-panel{margin-top:18px;border:1px solid #ffffff21;border-radius:18px;background:#19152dc9;padding:16px 18px}
+.result-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.result-top h2{font-size:.98rem;margin:0 0 2px}
+.result-top p{font-size:.76rem;color:var(--muted);margin:0}
+.progress{font-size:1.02rem;font-weight:950;color:var(--yellow);white-space:nowrap}
+.progress-track{height:6px;background:#3f3458;overflow:hidden;border-radius:999px;margin:12px 0}
+.progress-bar{width:0%;height:100%;background:linear-gradient(90deg,var(--mint),var(--pink));transition:width .3s ease}
+.slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.slot{border:1px dashed #67567e;background:#201b39;min-height:96px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;overflow:hidden;color:#7f729b;font-weight:800}
+.slot .slotnumber{font-size:1.15rem}
+.slot small{font-size:.65rem}
+.slot.filled{border:1px solid #a67cc3;background:#efeaf5;color:#251432}
+.slot img{width:100%;height:70px;object-fit:cover;display:block}
+.slot b{padding:3px 5px;font-size:.66rem;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.bottomline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.notice{color:#b7aaca;font-size:.74rem;line-height:1.4}
+.historysummary{color:#92f2d5;font-size:.76rem;font-weight:750}
+
+.modal[hidden]{display:none!important}
+.modal{position:fixed;inset:0;z-index:50;background:#050314df;backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:14px}
+.dialog{width:min(640px,100%);border-radius:20px;border:1px solid #eac7ff5a;background:linear-gradient(140deg,#332452,#1d173b);box-shadow:0 24px 80px #000c;overflow:hidden;position:relative;animation:pop .24s ease}
+@keyframes pop{from{transform:translateY(14px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.dialoghead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #ffffff20}
+.dialoghead strong{color:var(--yellow);font-size:.84rem;letter-spacing:.08em}
+.x{background:#ffffff1c;color:#fff;border:1px solid #ffffff44;border-radius:100%;width:38px;height:38px;font-size:1.35rem;line-height:1;display:grid;place-items:center}
+.preview{width:100%;height:min(52vh,440px);display:flex;justify-content:center;align-items:center;background:#141122;padding:10px}
+.preview img{display:block;max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.dialogfooter{padding:14px 18px 18px}
+.dialogfooter h3{font-size:1.15rem;margin:0 0 4px}
+.dialogfooter p{margin:0 0 12px;color:#c4b9db;font-size:.8rem}
+.modalactions{display:flex;gap:10px}
+.modalactions .btn{flex:1;min-height:46px;font-size:.94rem}
+.done-banner{display:none;padding:12px 14px;border-radius:12px;background:#143a36;border:1px solid #61edc878;color:#9ef8e0;font-weight:900;margin-top:12px}
+.done-banner.visible{display:block}
+
+/* Tối ưu Mobile */
+@media(max-width:820px){
+  .dashboard{grid-template-columns:1fr}
+  .controls{justify-content:stretch}
+  .controls .btn{flex:1}
+  .field{min-width:100%}
+  .stage{min-height:480px}
+}
+@media(max-width:540px){
+  .wrap{width:calc(100% - 20px)}
+  main{padding:14px 0 32px}
+  .intro h1{font-size:1.85rem;margin:4px 0 6px}
+  .intro p{font-size:.82rem;margin-bottom:12px}
+  .dashboard{padding:12px;gap:10px}
+  .field input,.field select{min-height:42px;font-size:.88rem}
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .controls .btn{padding:10px 10px;font-size:.84rem;min-height:44px}
+  
+  .stage{min-height:460px;border-radius:16px}
+  .stage:before{inset:6px}
+  .corner{top:12px;left:12px;font-size:.56rem}
+  .stage-count{top:12px;right:12px;font-size:.68rem}
+  .center-info{font-size:.65rem;width:92%;white-space:normal;bottom:10px}
+  
+  .symbol{font-size:2.2rem}
+  .star{font-size:.7rem;letter-spacing:3px}
+  .frontlabel{font-size:.52rem;margin-top:5px;letter-spacing:.12em}
+  .front:before{inset:5px}
+  .front:after{inset:9px}
+  .selected .front:after{font-size:.64rem;padding:4px 1px;inset:auto 3px 20%}
+  
+  .result-panel{padding:12px 10px}
+  .slots{grid-template-columns:repeat(5,1fr);gap:5px}
+  .slot{min-height:76px;border-radius:8px}
+  .slot img{height:48px}
+  .slot b{font-size:.55rem;padding:2px}
+  .slot .slotnumber{font-size:.95rem}
+  .slot small{font-size:.55rem}
+  
+  .dialog{width:min(94vw,500px);border-radius:18px}
+  .dialoghead{padding:12px 14px}
+  .dialogfooter{padding:12px 14px 16px}
+  .preview{height:min(50vh,340px);padding:6px}
+  .modalactions .btn{min-height:46px;font-size:.9rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .deckcard,.facewrap,.progress-bar{transition:none!important}
+  .sparkle{animation:none}
+  .dialog{animation:none}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topline">
+    <div class="brand">✦ POSE <em>QUEST</em></div>
+    <div class="pill">20 THẺ POSE · 5 LƯỢT CHỌN</div>
+  </div>
+</header>
+<main class="wrap">
+  <section class="intro">
+    <div class="eyebrow">Team challenge / lucky cards</div>
+    <h1>Xáo bài. <span>Tự chọn pose!</span></h1>
+    <p>MC xáo bộ thẻ, người chơi chọn một thẻ đang úp. Thẻ sẽ mở pose toàn màn hình; bấm đóng ảnh để lưu kết quả cho đội và tiếp tục chọn đến khi đủ 5 pose.</p>
+  </section>
+
+  <section class="dashboard">
+    <div class="settings">
+      <div class="field">
+        <label for="teamname">Tên đội hiện tại</label>
+        <input type="text" id="teamname" maxlength="50" value="Team 01" aria-label="Tên đội" />
+      </div>
+      <div class="field">
+        <label for="duplicates">Quy tắc trùng ảnh</label>
+        <select id="duplicates">
+          <option value="between">Không trùng trong đội · được trùng giữa các đội</option>
+          <option value="all">Cho phép trùng cả trong một đội</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="shuffle" class="btn primary">🎴 XÁO BÀI</button>
+      <button id="reset" class="btn secondary">↺ ĐỔI TEAM / RESET</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="stageheading">
+    <div class="stagehead">
+      <h2 id="stageheading" class="step-title">Bộ thẻ pose</h2>
+      <div id="status" class="status" role="status" aria-live="polite">Sẵn sàng xáo bài</div>
+    </div>
+    <div id="stage" class="stage">
+      <div class="corner">SECRET POSE DECK</div>
+      <div class="stage-count" id="stagecount">20 THẺ · 5 LƯỢT</div>
+      <div class="sparkle one">✦</div>
+      <div class="sparkle two">✧</div>
+      <div id="deck"></div>
+      <div id="centerinfo" class="center-info">Nhấn “XÁO BÀI” để trải các thẻ bí mật</div>
+    </div>
+  </section>
+
+  <section class="result-panel" aria-labelledby="pickedtitle">
+    <div class="result-top">
+      <div>
+        <h2 id="pickedtitle">5 pose của đội</h2>
+        <p>Chọn các thẻ úp để hoàn thành thử thách</p>
+      </div>
+      <div id="progress" class="progress">0 / 5</div>
+    </div>
+    <div class="progress-track"><div id="progressbar" class="progress-bar"></div></div>
+    <div class="slots" id="slots"></div>
+    <div class="done-banner" id="done">🎉 Đã hoàn thành đủ 5 pose! Bấm “ĐỔI TEAM / RESET” để bắt đầu đội tiếp theo.</div>
+    <div class="bottomline">
+      <span id="tip" class="notice">Chưa chọn pose nào. Các đội được rút lại những ảnh mà đội trước đã gặp.</span>
+      <span id="past" class="historysummary"></span>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden role="presentation">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="posetitle">
+    <div class="dialoghead">
+      <strong id="revealbadge">POSE ĐÃ CHỌN</strong>
+      <button class="x" id="close" aria-label="Đóng ảnh và giữ pose" title="Đóng và giữ pose">×</button>
+    </div>
+    <div class="preview">
+      <img id="bigimage" alt="Pose vừa mở">
+    </div>
+    <div class="dialogfooter">
+      <h3 id="posetitle">Pose</h3>
+      <p>Đóng ảnh để lưu pose này vào danh sách của đội.</p>
+      <div class="modalactions">
+        <button id="confirm" class="btn primary">✓ ĐÓNG ẢNH & GIỮ POSE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const POSES = [
+  { id: 1, title: "Pose 01", src: "images/Messenger_creation_00FCCFA4-D40E-4E0C-A959-540F1EFF4AB7.jpeg" },
+  { id: 2, title: "Pose 02", src: "images/Messenger_creation_044A3A62-DEE5-47F2-B300-2823F26846BF.jpeg" },
+  { id: 3, title: "Pose 03", src: "images/Messenger_creation_17BFCD2E-8968-4468-8192-0D9E380B89D4.jpeg" },
+  { id: 4, title: "Pose 04", src: "images/Messenger_creation_3A580DDF-7A70-4A5F-9BAF-5D0FC066EF97.jpeg" },
+  { id: 5, title: "Pose 05", src: "images/Messenger_creation_3E301AF0-69D3-4055-8B0E-F17FA5425938.jpeg" },
+  { id: 6, title: "Pose 06", src: "images/Messenger_creation_50F6FD25-E92B-4844-A5C9-003CF439F541.jpeg" },
+  { id: 7, title: "Pose 07", src: "images/Messenger_creation_5C77E786-34CD-4777-B6ED-E259039B6833.jpeg" },
+  { id: 8, title: "Pose 08", src: "images/Messenger_creation_71BB48F1-5F53-498D-BBCA-5E02113C7E88.jpeg" },
+  { id: 9, title: "Pose 09", src: "images/Messenger_creation_75648FA7-0C94-48F2-81F9-B412665B0053.jpeg" },
+  { id: 10, title: "Pose 10", src: "images/Messenger_creation_79448820-AFC3-42D9-BCA8-5D4D28AB6EF4.jpeg" },
+  { id: 11, title: "Pose 11", src: "images/Messenger_creation_8348D38D-67F1-4917-A2B8-50027327CE3D.jpeg" },
+  { id: 12, title: "Pose 12", src: "images/Messenger_creation_93BF7D92-7DA7-4936-A41E-FBFBFE04C7D8.jpeg" },
+  { id: 13, title: "Pose 13", src: "images/Messenger_creation_AF6A26F3-D99C-4D45-8892-F6AC492D4540.webp" },
+  { id: 14, title: "Pose 14", src: "images/Messenger_creation_B9AB8740-B99E-4166-9062-54D3D4D085A3.jpeg" },
+  { id: 15, title: "Pose 15", src: "images/Messenger_creation_C1562DF3-5E45-4C77-9577-D1E94EEC5952.jpeg" },
+  { id: 16, title: "Pose 16", src: "images/Messenger_creation_CDC7135B-37E2-4DFF-9D60-ADD63B08B4EA.jpeg" },
+  { id: 17, title: "Pose 17", src: "images/Messenger_creation_D1DAD609-9AA6-4676-84E1-68A119BB1712.jpeg" },
+  { id: 18, title: "Pose 18", src: "images/Messenger_creation_DC85D786-59C7-4778-BFA3-DE651A1274EB.jpeg" },
+  { id: 19, title: "Pose 19", src: "images/Messenger_creation_F534B398-646D-44B4-B527-ADA9DD79B68C.jpeg" },
+  { id: 20, title: "Pose 20", src: "images/Messenger_creation_F602C382-CC24-435A-AF74-184057AF4445.avif" }
+];
+
+const TARGET_COUNT = 5;
+const $ = id => document.getElementById(id);
+const deck = $('deck'), stage = $('stage');
+
+let teamIndex = 1;
+let phase = 'idle';
+let active = null;
+let selected = [];
+let cards = [];
+let shuffleToken = 0;
+let priorFocus = null;
+let history = [];
+
+try {
+  const saved = JSON.parse(localStorage.getItem('poseQuestTeamHistory') || '[]');
+  if (Array.isArray(saved)) history = saved.slice(-100);
+} catch (_e) {}
+
+function rand(n) {
+  if (n <= 0) return 0;
+  if (window.crypto && crypto.getRandomValues) {
+    const a = new Uint32Array(1);
+    const lim = Math.floor(4294967296 / n) * n;
+    do { crypto.getRandomValues(a); } while (a[0] >= lim);
+    return a[0] % n;
+  }
+  return Math.floor(Math.random() * n);
+}
+
+function shuffled(a) {
+  const b = a.slice();
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = rand(i + 1);
+    [b[j], b[i]] = [b[i], b[j]];
+  }
+  return b;
+}
+
+function setStatus(s) {
+  $('status').textContent = s;
+}
+
+function cardTemplate(i) {
+  const el = document.createElement('button');
+  el.type = 'button';
+  el.className = 'deckcard';
+  el.setAttribute('aria-label', `Thẻ bí mật ${i + 1}`);
+  el.innerHTML = `
+    <div class="facewrap">
+      <div class="front">
+        <div class="star">✦ ✧ ✦</div>
+        <div class="symbol">?</div>
+        <div class="frontlabel">POSE CARD</div>
+      </div>
+      <div class="back">
+        <img alt="" loading="eager">
+        <span></span>
+      </div>
+    </div>
+  `;
+  el.addEventListener('click', () => pick(el));
+  return el;
+}
+
+function createCards() {
+  deck.replaceChildren();
+  cards = Array.from({ length: POSES.length }, (_, i) => {
+    const el = cardTemplate(i);
+    deck.appendChild(el);
+    return { el, pose: null, index: i };
+  });
+  placeIdle();
+}
+
+function setPos(card, x, y, angle, z) {
+  const s = card.el.style;
+  s.setProperty('--x', Math.round(x) + 'px');
+  s.setProperty('--y', Math.round(y) + 'px');
+  s.setProperty('--angle', angle + 'deg');
+  s.setProperty('--z', String(z));
+}
+
+function layout() {
+  const width = stage.clientWidth;
+  const n = cards.length || POSES.length;
+  
+  // Dynamic columns for mobile-first & responsive grid
+  let cols;
+  if (width < 420) {
+    cols = n > 12 ? 4 : 3;
+  } else if (width < 640) {
+    cols = n > 15 ? 4 : 4;
+  } else if (width < 860) {
+    cols = 5;
+  } else if (width < 1100) {
+    cols = 6;
+  } else {
+    cols = Math.min(8, Math.max(5, Math.ceil(n / 3)));
+  }
+
+  const gap = width < 480 ? 8 : (width < 800 ? 12 : 16);
+  const paddingH = width < 480 ? 16 : 32;
+  const availableW = width - paddingH - (cols - 1) * gap;
+  const maxCardW = width < 480 ? 95 : (width < 800 ? 135 : 165);
+  const cw = Math.max(56, Math.min(maxCardW, Math.floor(availableW / cols)));
+  const ch = Math.round(cw * 1.35);
+  const rows = Math.ceil(n / cols);
+  const topPadding = width < 480 ? 52 : 62;
+  const bottomPadding = width < 480 ? 46 : 56;
+  const height = topPadding + rows * ch + (rows - 1) * gap + bottomPadding;
+
+  stage.style.height = Math.max(380, height) + 'px';
+  cards.forEach(({ el }) => el.style.setProperty('--cardwidth', cw + 'px'));
+  return { width, cols, cw, ch, gap, rows, height: Math.max(380, height) };
+}
+
+function placeIdle() {
+  phase = 'idle';
+  const g = layout();
+  const n = cards.length;
+  cards.forEach((c, i) => {
+    c.el.classList.remove('ready', 'flipped', 'selected', 'dim');
+    c.el.disabled = true;
+    c.pose = null;
+    const offset = i % 5;
+    setPos(c, (offset - 2) * 1.5, (offset - 2) * 0.85, (i - n / 2) * 1.5, i + 1);
+  });
+  $('centerinfo').textContent = `Nhấn “XÁO BÀI” để trải ${cards.length} thẻ bí mật`;
+  $('stagecount').textContent = `${cards.length} THẺ · ${TARGET_COUNT} LƯỢT`;
+}
+
+function targetPositions() {
+  const g = layout();
+  const n = cards.length;
+  return cards.map((c, i) => {
+    const row = Math.floor(i / g.cols);
+    const itemsInThisRow = (row === g.rows - 1 && n % g.cols !== 0) ? (n % g.cols) : g.cols;
+    const col = i - row * g.cols;
+    const x = (col - (itemsInThisRow - 1) / 2) * (g.cw + g.gap);
+    const y = (row - (g.rows - 1) / 2) * (g.ch + g.gap) + 6;
+    return [x, y];
+  });
+}
+
+function updateSlots() {
+  const slots = $('slots');
+  slots.replaceChildren();
+  for (let i = 0; i < TARGET_COUNT; i++) {
+    const el = document.createElement('div');
+    el.className = 'slot' + (selected[i] ? ' filled' : '');
+    if (selected[i]) {
+      const img = document.createElement('img');
+      img.src = selected[i].pose.src;
+      img.alt = selected[i].pose.title;
+      el.append(img);
+      const b = document.createElement('b');
+      b.textContent = selected[i].pose.title;
+      el.append(b);
+    } else {
+      el.innerHTML = `<div class="slotnumber">${i + 1}</div><small>Chưa chọn</small>`;
+    }
+    slots.append(el);
+  }
+  $('progress').textContent = `${selected.length} / ${TARGET_COUNT}`;
+  $('progressbar').style.width = (selected.length / TARGET_COUNT * 100) + '%';
+  $('done').classList.toggle('visible', selected.length === TARGET_COUNT);
+  $('past').textContent = history.length ? `Đã lưu ${history.length} đội` : '';
+}
+
+function randomAssignment() {
+  const mode = $('duplicates').value;
+  const assignments = mode === 'all'
+    ? Array.from({ length: cards.length }, () => POSES[rand(POSES.length)])
+    : shuffled(POSES).slice(0, cards.length);
+
+  cards.forEach((c, i) => {
+    const pose = assignments[i];
+    c.pose = pose;
+    const img = c.el.querySelector('img');
+    img.src = pose.src;
+    img.alt = pose.title;
+    c.el.querySelector('.back span').textContent = pose.title;
+  });
+}
+
+async function shuffleNow() {
+  if (phase === 'shuffling' || active || selected.length) return;
+  shuffleToken++;
+  const token = shuffleToken;
+  phase = 'shuffling';
+  $('shuffle').disabled = true;
+  $('duplicates').disabled = true;
+  setStatus('Đang xáo bài…');
+  $('centerinfo').textContent = 'Chờ bộ bài xáo xong…';
+
+  cards = shuffled(cards);
+  randomAssignment();
+  const g = layout();
+
+  const animations = [];
+  const spread = Math.min(150, g.width * 0.22);
+  cards.forEach((c, i) => {
+    c.el.disabled = true;
+    c.el.classList.remove('ready');
+    const dir = i % 2 ? -1 : 1;
+    const a = c.el.animate([
+      { transform: 'translate(-50%,-50%) translate(0px,0px) rotate(0deg)' },
+      { transform: `translate(-50%,-50%) translate(${dir * spread}px, ${(i % 3 - 1) * 45}px) rotate(${dir * 30}deg)`, offset: 0.25 },
+      { transform: `translate(-50%,-50%) translate(${-dir * spread * 0.65}px, ${(i % 4 - 1.5) * 30}px) rotate(${-dir * 22}deg)`, offset: 0.5 },
+      { transform: `translate(-50%,-50%) translate(${dir * spread * 0.45}px, ${(i % 3 - 1) * 35}px) rotate(${dir * 15}deg)`, offset: 0.75 },
+      { transform: 'translate(-50%,-50%) translate(0px,0px) rotate(0deg)' }
+    ], {
+      duration: 1400,
+      delay: Math.min(400, i * 20),
+      easing: 'ease-in-out'
+    });
+    animations.push(a);
+  });
+
+  await Promise.allSettled(animations.map(a => a.finished));
+  if (token !== shuffleToken) return;
+
+  const positions = targetPositions();
+  cards.forEach((c, i) => {
+    const [x, y] = positions[i];
+    setPos(c, x, y, 0, cards.length - i);
+    c.el.disabled = false;
+    c.el.classList.add('ready');
+  });
+
+  phase = 'ready';
+  $('shuffle').disabled = false;
+  $('shuffle').textContent = '🔀 XÁO LẠI';
+  setStatus('Hãy chọn 1 thẻ bất kỳ');
+  $('centerinfo').textContent = `Chọn thẻ mở pose · Đã chọn ${selected.length}/${TARGET_COUNT}`;
+}
+
+function pick(el) {
+  if (phase !== 'ready' || active || selected.length >= TARGET_COUNT) return;
+  const c = cards.find(x => x.el === el);
+  if (!c || el.classList.contains('selected') || !c.pose) return;
+
+  active = c;
+  priorFocus = document.activeElement;
+  c.el.classList.add('flipped');
+  cards.forEach(x => {
+    if (x !== c) x.el.classList.add('dim');
+  });
+
+  $('revealbadge').textContent = `POSE ${selected.length + 1} / ${TARGET_COUNT}`;
+  $('bigimage').src = c.pose.src;
+  $('bigimage').alt = c.pose.title;
+  $('posetitle').textContent = c.pose.title;
+  setStatus(`Đã mở ${c.pose.title} · Đóng để lưu pose`);
+
+  setTimeout(() => {
+    if (active === c) {
+      $('modal').hidden = false;
+      document.body.style.overflow = 'hidden';
+      $('confirm').focus();
+    }
+  }, 420);
+}
+
+function closeModal() {
+  $('modal').hidden = true;
+  document.body.style.overflow = '';
+  cards.forEach(c => c.el.classList.remove('dim'));
+  if (priorFocus && typeof priorFocus.focus === 'function') priorFocus.focus();
+  priorFocus = null;
+}
+
+function confirmPick() {
+  if (!active) return;
+  const c = active;
+  active = null;
+
+  selected.push({ pose: c.pose, card: c.index });
+  closeModal();
+
+  c.el.classList.remove('flipped');
+  c.el.classList.add('selected');
+  c.el.classList.remove('ready');
+  c.el.disabled = true;
+
+  $('shuffle').disabled = true;
+  updateSlots();
+  $('centerinfo').textContent = `Chọn thẻ mở pose · Đã chọn ${selected.length}/${TARGET_COUNT}`;
+
+  if (selected.length === TARGET_COUNT) {
+    phase = 'done';
+    setStatus(`🎉 Đã hoàn thành ${TARGET_COUNT} / ${TARGET_COUNT}`);
+    cards.forEach(x => x.el.disabled = true);
+    $('shuffle').disabled = true;
+    saveTeam();
+  } else {
+    setStatus(`Đã lưu ${c.pose.title} · Chọn tiếp ${TARGET_COUNT - selected.length} thẻ`);
+  }
+}
+
+function saveTeam() {
+  const name = $('teamname').value.trim() || `Team ${String(teamIndex).padStart(2, '0')}`;
+  history.push({
+    name,
+    poses: selected.map(s => ({ id: s.pose.id, title: s.pose.title })),
+    at: new Date().toISOString()
+  });
+  try {
+    localStorage.setItem('poseQuestTeamHistory', JSON.stringify(history.slice(-100)));
+  } catch (_e) {}
+  updateSlots();
+}
+
+function resetTeam() {
+  if (active) confirmPick();
+  if (phase === 'shuffling') {
+    shuffleToken++;
+    cards.forEach(c => c.el.getAnimations().forEach(a => a.cancel()));
+  }
+  if (selected.length > 0 && selected.length < TARGET_COUNT) {
+    if (!window.confirm('Đổi đội lúc này sẽ làm mới lượt chọn. Bạn có chắc muốn tiếp tục?')) return;
+  }
+  if (selected.length === TARGET_COUNT || selected.length > 0 || phase === 'ready') {
+    teamIndex++;
+  }
+  selected = [];
+  phase = 'idle';
+  $('teamname').value = 'Team ' + String(teamIndex).padStart(2, '0');
+  $('duplicates').disabled = false;
+  $('shuffle').disabled = false;
+  $('shuffle').textContent = '🎴 XÁO BÀI';
+  $('tip').textContent = 'Chưa chọn pose nào. Các đội được rút lại những ảnh mà đội trước đã gặp.';
+  createCards();
+  updateSlots();
+  setStatus('Sẵn sàng xáo bài');
+}
+
+$('shuffle').addEventListener('click', shuffleNow);
+$('reset').addEventListener('click', resetTeam);
+$('confirm').addEventListener('click', confirmPick);
+$('close').addEventListener('click', confirmPick);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && active) {
+    e.preventDefault();
+    confirmPick();
+  }
+});
+
+window.addEventListener('resize', () => {
+  if (phase === 'idle') {
+    placeIdle();
+  } else if (phase === 'ready' || phase === 'done') {
+    const positions = targetPositions();
+    cards.forEach((c, i) => {
+      const [x, y] = positions[i];
+      setPos(c, x, y, 0, cards.length - i);
+    });
+  }
+});
+
+// Preload images
+POSES.forEach(p => {
+  const img = new Image();
+  img.src = p.src;
+});
+
+createCards();
+updateSlots();
+</script>
+</body>
+</html>
