@@ -61,16 +61,18 @@ export function hasExpired(round, now=Date.now()) { return !!round && round.stat
 export function markTimedOut(state, now = Date.now()) {
   const team = state.teams[state.teamIndex], round = team.rounds[currentLevel(team)];
   if (!hasExpired(round,now)) return false;
-  round.status = 'awaiting-timeout'; round.elapsedMs = 30000;
+  round.status = 'awaiting-timeout'; round.elapsedMs = 30000; round.isCorrection = false;
   state.phase = 'grading'; return true;
 }
 export function grade(state, correct, now=Date.now()) {
   const team = state.teams[state.teamIndex], level = currentLevel(team), round = team.rounds[level];
   if (!round || !['running','awaiting-timeout'].includes(round.status)) throw new Error('Nothing to grade');
-  const elapsedMs = round.status === 'awaiting-timeout' ? 30000 : Math.min(30000, Math.max(0, now - round.startedAt));
-  const validCorrect = !!correct && round.status === 'running' && now <= round.deadline;
-  round.status = validCorrect ? 'correct' : (round.status === 'awaiting-timeout' || now > round.deadline ? 'timeout' : 'wrong');
-  round.elapsedMs = elapsedMs; round.points = validCorrect ? LEVELS[level].point : 0; round.awardedAt = now;
+  const elapsedMs = round.status === 'awaiting-timeout' ? (round.elapsedMs ?? 30000) : Math.min(30000, Math.max(0, now - round.startedAt));
+  // A zeroed timer stops counting but NEVER locks manual scoring.
+  // Judges can still mark a late result correct or wrong, with elapsed time capped at 30s.
+  round.status = correct ? 'correct' : 'wrong';
+  round.elapsedMs = elapsedMs; round.points = correct ? LEVELS[level].point : 0; round.awardedAt = now;
+  round.isCorrection = false;
   state.phase='graded';
   return round;
 }
@@ -80,7 +82,7 @@ export function undoLastGrade(state) {
   const graded = [...team.rounds].reverse().find(r => ['correct','wrong','timeout'].includes(r?.status));
   if (!graded) return false;
   // Keep the time used; allow the judge to correct a mistaken tap without replaying the timer.
-  graded.status='awaiting-timeout'; graded.points=0; graded.awardedAt=null;
+  graded.status='awaiting-timeout'; graded.points=0; graded.awardedAt=null; graded.isCorrection=true;
   state.phase='grading';
   return true;
 }
@@ -89,9 +91,9 @@ export function correctJudgment(state, correct) {
   const team=state.teams[state.teamIndex],r=[...team.rounds].reverse().find(x=>x?.status==='awaiting-timeout');
   if(!r)throw new Error('No judgment pending');
   const level=team.rounds.indexOf(r);
-  r.status=correct&&r.elapsedMs<30000?'correct':(r.elapsedMs>=30000?'timeout':'wrong');
+  r.status=correct?'correct':'wrong';
   r.points=r.status==='correct'?LEVELS[level].point:0;
-  r.awardedAt=Date.now();state.phase='graded';
+  r.awardedAt=Date.now();r.isCorrection=false;state.phase='graded';
 }
 export function proceed(state) {
   if(state.phase!=='graded') throw new Error('Must grade first');
