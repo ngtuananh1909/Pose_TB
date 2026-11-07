@@ -16,13 +16,21 @@ test('never repeats a challenge across teams; exactly two spare per level',()=>{
  }
  for(let lvl=0;lvl<3;lvl++){assert.equal(usedChallengeIds(s,lvl).size,4);assert.equal(availableChallenges(s,lvl).length,2);}assert.equal(s.teams.every(teamComplete),true);assert.equal(s.teams[0].rounds.every(r=>r.points>0),true);
 });
-test('30s countdown cannot be bypassed by late correct tap',()=>{
- const s=initialState();assignChallenge(s,0,'C1-01');startTimer(s,1000);assert.equal(remainingMs(s.teams[0].rounds[0],4000),27000);grade(s,true,31100);assert.equal(s.teams[0].rounds[0].status,'timeout');assert.equal(teamTotal(s.teams[0]),0);
+test('after the 30s countdown, manual correct still awards points; time is capped at 30s',()=>{
+ const s=initialState();assignChallenge(s,0,'C1-01');startTimer(s,1000);assert.equal(remainingMs(s.teams[0].rounds[0],4000),27000);
+ grade(s,true,31100);assert.equal(s.teams[0].rounds[0].status,'correct');assert.equal(s.teams[0].rounds[0].elapsedMs,30000);assert.equal(teamTotal(s.teams[0]),10);
+});
+test('expired clock can be marked correct or wrong, and corrections retain score/time',()=>{
+ const s=initialState();assignChallenge(s,0,'C1-01');startTimer(s,1000);assert.equal(markTimedOut(s,33000),true);
+ assert.equal(s.phase,'grading');assert.equal(s.teams[0].rounds[0].status,'awaiting-timeout');
+ correctJudgment(s,true);assert.equal(s.teams[0].rounds[0].status,'correct');assert.equal(teamTotal(s.teams[0]),10);
+ assert.equal(undoLastGrade(s),true);assert.equal(s.phase,'grading');assert.equal(s.teams[0].rounds[0].isCorrection,true);
+ correctJudgment(s,false);assert.equal(s.teams[0].rounds[0].status,'wrong');assert.equal(s.teams[0].rounds[0].elapsedMs,30000);assert.equal(teamTotal(s.teams[0]),0);
 });
 test('timer expires on reload and waits for manual confirmation',()=>{
  const s=initialState();assignChallenge(s,0,'C1-01');startTimer(s,Date.now()-50000);
  const mem={v:'',getItem(){return this.v},setItem(k,v){this.v=v}};assert.equal(saveState(s,mem),true);
- const loaded=loadState(mem);assert.equal(loaded.phase,'grading');assert.equal(loaded.teams[0].rounds[0].status,'awaiting-timeout');correctJudgment(loaded,false);assert.equal(loaded.phase,'graded');assert.equal(loaded.teams[0].rounds[0].points,0);
+ const loaded=loadState(mem);assert.equal(loaded.phase,'grading');assert.equal(loaded.teams[0].rounds[0].status,'awaiting-timeout');correctJudgment(loaded,true);assert.equal(loaded.phase,'graded');assert.equal(loaded.teams[0].rounds[0].points,10);
 });
 test('reset a team preserves assigned cards and other teams untouched',()=>{
  const s=initialState();assignChallenge(s,0,'C1-01');startTimer(s,100);grade(s,true,1010);proceed(s);assignChallenge(s,1,'C2-01');const before=structuredClone(s.teams[1]);
