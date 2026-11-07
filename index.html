@@ -98,15 +98,35 @@ main{padding:14px 0 54px}
 .progress-track{height:6px;background:#3f3458;overflow:hidden;border-radius:999px;margin:12px 0}
 .progress-bar{width:0%;height:100%;background:linear-gradient(90deg,var(--mint),var(--pink));transition:width .3s ease}
 .slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.slot{border:1px dashed #67567e;background:#201b39;min-height:96px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;overflow:hidden;color:#7f729b;font-weight:800}
+.slot{border:1px dashed #67567e;background:#201b39;min-height:96px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;overflow:hidden;color:#7f729b;font-weight:800;transition:all .18s;position:relative}
 .slot .slotnumber{font-size:1.15rem}
 .slot small{font-size:.65rem}
-.slot.filled{border:1px solid #a67cc3;background:#efeaf5;color:#251432}
+.slot.filled{border:1.5px solid #bd88ea;background:#efeaf5;color:#251432;cursor:pointer}
+.slot.filled:hover{transform:translateY(-2px);box-shadow:0 6px 18px #ff91ae44;border-color:var(--yellow)}
+.slot.filled:active{transform:translateY(0)}
 .slot img{width:100%;height:70px;object-fit:cover;display:block}
-.slot b{padding:3px 5px;font-size:.66rem;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.slot b{padding:2px 4px 1px;font-size:.66rem;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.slot .slot-hint{font-size:.56rem;color:#78589c;font-weight:900;letter-spacing:.02em;padding-bottom:3px}
 .bottomline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .notice{color:#b7aaca;font-size:.74rem;line-height:1.4}
 .historysummary{color:#92f2d5;font-size:.76rem;font-weight:750}
+
+/* MODAL SYSTEM (VÒNG 1, VÒNG 2 & QR) */
+.modal[hidden]{display:none!important}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(5,3,20,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:14px;overflow-y:auto}
+.dialog{width:min(640px,94vw);max-height:92vh;border-radius:22px;border:1.5px solid #a879e6aa;background:#181232;box-shadow:0 24px 80px rgba(0,0,0,0.92);overflow:hidden;position:relative;animation:pop .24s ease;display:flex;flex-direction:column;color:#fff}
+@keyframes pop{from{transform:translateY(14px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.dialoghead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #ffffff20;background:#1f1842;flex-shrink:0}
+.dialoghead strong{color:var(--yellow);font-size:.84rem;letter-spacing:.08em}
+.x{background:#ffffff1c;color:#fff;border:1px solid #ffffff44;border-radius:100%;width:38px;height:38px;font-size:1.35rem;line-height:1;display:grid;place-items:center;transition:background .15s}
+.x:hover{background:#ffffff33}
+.preview{width:100%;height:min(50vh,420px);display:flex;justify-content:center;align-items:center;background:#0c091d;padding:12px;overflow:hidden}
+.preview img{display:block;max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.6)}
+.dialogfooter{padding:16px 20px 20px;background:#181232;flex-shrink:0}
+.dialogfooter h3{font-size:1.25rem;margin:0 0 6px;color:#fff;font-weight:900}
+.dialogfooter p{margin:0 0 14px;color:#d1c5ea;font-size:.84rem;line-height:1.45}
+.modalactions{display:flex;gap:10px}
+.modalactions .btn{flex:1;min-height:46px;font-size:.94rem}
 
 /* Done Banner with Transition Button */
 .done-banner{display:none;padding:16px 18px;border-radius:16px;background:linear-gradient(120deg,#143a36,#1a2e47);border:1px solid #61edc899;color:#9ef8e0;margin-top:16px;box-shadow:0 10px 30px #061e1b66}
@@ -163,14 +183,15 @@ main{padding:14px 0 54px}
 #r2-res-vibe{font-size:.78rem;color:var(--muted);margin:0}
 
 /* Team Final Summary Card */
-.team-summary-card{margin-top:22px;border:1px solid #7af5d466;background:linear-gradient(135deg,#132838,#141e3a);border-radius:18px;padding:18px 20px;box-shadow:0 14px 40px #06182477;animation:pop .25s ease}
+.team-summary-card{margin-top:24px;border:1.5px solid #7af5d499;background:linear-gradient(135deg,#132b3d,#121c38);border-radius:20px;padding:20px 22px;box-shadow:0 16px 45px rgba(0,0,0,0.6);animation:pop .25s ease;color:#fff}
 .team-summary-card[hidden]{display:none!important}
 .summary-badge{display:inline-block;padding:3px 10px;background:#7af5d422;color:#a5fae3;border-radius:100px;font-size:.68rem;font-weight:900;letter-spacing:.1em;margin-bottom:6px}
 .summary-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
-.summary-col{background:#0e172a80;padding:12px;border-radius:12px;border:1px solid #ffffff12}
-.summary-col strong{display:block;font-size:.76rem;color:#b2c5e5;margin-bottom:8px}
+.summary-col{background:#0a1224;padding:14px;border-radius:14px;border:1px solid #ffffff18}
+.summary-col strong{display:block;font-size:.8rem;color:#c0d5f5;margin-bottom:10px;font-weight:800}
 .summary-pose-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.summary-pose-grid img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:6px;border:1px solid #ffffff33}
+.summary-pose-grid img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:1.5px solid #ffffff33;transition:transform .15s}
+.summary-pose-grid img:hover{transform:scale(1.05);border-color:var(--yellow)}
 .summary-dance-pill{display:flex;align-items:center;gap:10px;background:#202a49;padding:8px 12px;border-radius:10px;border:1px solid #6379ab}
 .summary-dance-pill .d-icon{font-size:1.8rem}
 .summary-dance-pill h4{margin:0 0 2px;font-size:.92rem}
@@ -178,11 +199,11 @@ main{padding:14px 0 54px}
 .summary-actions{display:flex;justify-content:flex-end;margin-top:14px}
 
 /* DANCE STUDIO MODAL */
-.dance-dialog{width:min(720px,100%);background:linear-gradient(150deg,#2b1f4a,#14102c);border:1px solid #a879e677}
+.dance-dialog{width:min(720px,94vw);max-height:94vh;background:linear-gradient(150deg,#2b1f4a,#14102c);border:1px solid #a879e677}
 .dialog-badge{display:inline-block;padding:2px 8px;border-radius:99px;background:#7af5d424;color:#7af5d4;font-size:.64rem;font-weight:900;letter-spacing:.08em}
-.dance-stage{position:relative;background:#080616;padding:12px;display:flex;justify-content:center;align-items:center;min-height:min(55vh,460px)}
-.video-container{position:relative;width:min(100%,360px);aspect-ratio:9/16;max-height:min(52vh,440px);border-radius:14px;overflow:hidden;background:#000;box-shadow:0 12px 32px #000c}
-#dance-video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease}
+.dance-stage{position:relative;background:#080616;padding:10px;display:flex;justify-content:center;align-items:center;min-height:min(50vh,430px)}
+.video-container{position:relative;width:min(100%,320px);height:min(48vh,420px);aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 12px 32px #000c;display:flex;align-items:center;justify-content:center}
+#dance-video{width:100%;height:100%;object-fit:contain;display:block;background:#000;transition:transform .3s ease}
 #dance-video.mirrored{transform:scaleX(-1)}
 
 /* Countdown Overlay */
@@ -456,14 +477,14 @@ main{padding:14px 0 54px}
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="posetitle">
     <div class="dialoghead">
       <strong id="revealbadge">POSE ĐÃ CHỌN</strong>
-      <button class="x" id="close" aria-label="Đóng ảnh và giữ pose" title="Đóng và giữ pose">×</button>
+      <button class="x" id="close" aria-label="Đóng ảnh" title="Đóng">×</button>
     </div>
     <div class="preview">
       <img id="bigimage" alt="Pose vừa mở">
     </div>
     <div class="dialogfooter">
       <h3 id="posetitle">Pose</h3>
-      <p>Đóng ảnh để lưu pose này vào danh sách của đội.</p>
+      <p id="modal-hint">Đóng ảnh để lưu pose này vào danh sách của đội.</p>
       <div class="modalactions">
         <button id="confirm" class="btn primary">✓ ĐÓNG ẢNH & GIỮ POSE</button>
       </div>
@@ -484,7 +505,7 @@ main{padding:14px 0 54px}
 
     <div class="dance-stage">
       <div class="video-container">
-        <video id="dance-video" playsinline loop controls></video>
+        <video id="dance-video" playsinline loop controls preload="auto"></video>
         <div id="countdown-overlay" class="countdown-overlay" hidden>
           <div class="countdown-time" id="countdown-val">45</div>
           <div class="countdown-label">GIÂY TẬP LUYỆN</div>
@@ -798,7 +819,7 @@ function setPos(card, x, y, angle, z) {
 }
 
 function layout() {
-  const width = stage.clientWidth;
+  const width = stage.clientWidth || (window.innerWidth ? Math.min(1240, window.innerWidth - 30) : 1100);
   const n = cards.length || POSES.length;
   
   let cols;
@@ -866,13 +887,36 @@ function updateSlots() {
     const el = document.createElement('div');
     el.className = 'slot' + (selected[i] ? ' filled' : '');
     if (selected[i]) {
+      const currentItem = selected[i];
+      const slotNum = i + 1;
+      el.title = `Bấm để xem lại: ${currentItem.pose.title}`;
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-label', `Xem lại ${currentItem.pose.title}`);
+
       const img = document.createElement('img');
-      img.src = selected[i].pose.src;
-      img.alt = selected[i].pose.title;
+      img.src = currentItem.pose.src;
+      img.alt = currentItem.pose.title;
       el.append(img);
+
       const b = document.createElement('b');
-      b.textContent = selected[i].pose.title;
+      b.textContent = currentItem.pose.title;
       el.append(b);
+
+      const hint = document.createElement('span');
+      hint.className = 'slot-hint';
+      hint.textContent = '👁️ Bấm xem lại';
+      el.append(hint);
+
+      el.addEventListener('click', () => {
+        viewSelectedPose(currentItem.pose, slotNum);
+      });
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          viewSelectedPose(currentItem.pose, slotNum);
+        }
+      });
     } else {
       el.innerHTML = `<div class="slotnumber">${i + 1}</div><small>Chưa chọn</small>`;
     }
@@ -968,6 +1012,8 @@ function pick(el) {
   $('bigimage').src = c.pose.src;
   $('bigimage').alt = c.pose.title;
   $('posetitle').textContent = c.pose.title;
+  $('modal-hint').textContent = 'Đóng ảnh để lưu pose này vào danh sách của đội.';
+  $('confirm').textContent = '✓ ĐÓNG ẢNH & GIỮ POSE';
   setStatus(`Đã mở ${c.pose.title} · Đóng để lưu pose`);
 
   setTimeout(() => {
@@ -979,6 +1025,23 @@ function pick(el) {
   }, 420);
 }
 
+function viewSelectedPose(pose, index) {
+  if (!pose) return;
+  active = null; // viewing mode only
+  priorFocus = document.activeElement;
+
+  $('revealbadge').textContent = `POSE #${index} · ĐÃ LƯU`;
+  $('bigimage').src = pose.src;
+  $('bigimage').alt = pose.title;
+  $('posetitle').textContent = pose.title;
+  $('modal-hint').textContent = 'Pose đã chọn trong danh sách của đội. Nhấp nút đóng bên dưới để tiếp tục.';
+  $('confirm').textContent = '✕ ĐÓNG LẠI';
+
+  $('modal').hidden = false;
+  document.body.style.overflow = 'hidden';
+  $('confirm').focus();
+}
+
 function closeModal() {
   $('modal').hidden = true;
   document.body.style.overflow = '';
@@ -988,7 +1051,10 @@ function closeModal() {
 }
 
 function confirmPick() {
-  if (!active) return;
+  if (!active) {
+    closeModal();
+    return;
+  }
   const c = active;
   active = null;
 
@@ -1260,6 +1326,7 @@ function openDanceStudio(dance) {
   
   const video = $('dance-video');
   video.src = dance.src;
+  video.load();
   video.playbackRate = 1.0;
   video.classList.remove('mirrored');
   $('mirror-btn').classList.remove('active');
@@ -1272,7 +1339,12 @@ function openDanceStudio(dance) {
   document.body.style.overflow = 'hidden';
 
   // Try autoplay
-  video.play().catch(() => {});
+  const p = video.play();
+  if (p !== undefined) {
+    p.catch(() => {
+      $('dance-hint').innerHTML = `💡 Nhấn nút <b>Play ▶</b> trên video để phát bài nhảy và âm thanh!`;
+    });
+  }
 }
 
 function closeDanceStudio() {
@@ -1394,11 +1466,13 @@ function finishDanceRound() {
   
   const poseGrid = $('summary-poses');
   poseGrid.replaceChildren();
-  selected.forEach(s => {
+  selected.forEach((s, idx) => {
     const img = document.createElement('img');
     img.src = s.pose.src;
     img.alt = s.pose.title;
-    img.title = s.pose.title;
+    img.title = `Bấm xem lại: ${s.pose.title}`;
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', () => viewSelectedPose(s.pose, idx + 1));
     poseGrid.appendChild(img);
   });
 
@@ -1559,12 +1633,29 @@ $('qr-close').addEventListener('click', closeQRModal);
 
 $('next-team-btn').addEventListener('click', nextTeam);
 
+// Backdrop clicks
+$('modal').addEventListener('click', e => {
+  if (e.target === $('modal')) {
+    if (active) confirmPick();
+    else closeModal();
+  }
+});
+$('dance-modal').addEventListener('click', e => {
+  if (e.target === $('dance-modal')) closeDanceStudio();
+});
+$('qr-modal').addEventListener('click', e => {
+  if (e.target === $('qr-modal')) closeQRModal();
+});
+
 // Keyboard & Window
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (!$('qr-modal').hidden) closeQRModal();
     else if (!$('dance-modal').hidden) closeDanceStudio();
-    else if (active) confirmPick();
+    else if (!$('modal').hidden) {
+      if (active) confirmPick();
+      else closeModal();
+    }
   }
 });
 
@@ -1592,6 +1683,53 @@ createCards();
 updateSlots();
 updatePoolUI();
 drawWheel();
+
+// Test helper for automated browser verification
+const urlParams = new URLSearchParams(window.location.search);
+const testAction = urlParams.get('test');
+if (testAction === 'shuffle') {
+  cards.forEach(c => c.el.style.transition = 'none');
+  randomAssignment();
+  phase = 'ready';
+  const positions = targetPositions();
+  cards.forEach((c, i) => {
+    const [x, y] = positions[i];
+    setPos(c, x, y, 0, cards.length - i);
+    c.el.disabled = false;
+    c.el.classList.add('ready');
+  });
+  $('shuffle').disabled = false;
+  $('shuffle').textContent = '🔀 XÁO LẠI';
+  setStatus('Hãy chọn 1 thẻ bất kỳ');
+  $('centerinfo').textContent = `Chọn thẻ mở pose · Đã chọn 0/${TARGET_COUNT}`;
+} else if (testAction === 'pick') {
+  randomAssignment();
+  phase = 'ready';
+  const positions = targetPositions();
+  cards.forEach((c, i) => {
+    const [x, y] = positions[i];
+    setPos(c, x, y, 0, cards.length - i);
+    c.el.disabled = false;
+    c.el.classList.add('ready');
+  });
+  pick(cards[0].el);
+  $('modal').querySelector('.dialog').style.animation = 'none';
+  $('modal').hidden = false;
+} else if (testAction === 'review') {
+  $('modal').querySelector('.dialog').style.animation = 'none';
+  randomAssignment();
+  selected.push({ pose: POSES[0], card: 0 });
+  selected.push({ pose: POSES[1], card: 1 });
+  updateSlots();
+  viewSelectedPose(selected[0].pose, 1);
+} else if (testAction === 'studio') {
+  $('dance-modal').querySelector('.dialog').style.animation = 'none';
+  openDanceStudio(TIKTOK_TRENDS[0]);
+} else if (testAction === 'summary') {
+  selected = POSES.slice(0, 5).map((p, i) => ({ pose: p, card: i }));
+  currentTeamDance = TIKTOK_TRENDS[0];
+  finishDanceRound();
+}
 </script>
 </body>
 </html>
