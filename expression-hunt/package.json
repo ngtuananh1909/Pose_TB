@@ -1,0 +1,8 @@
+{
+  "name": "expression-hunt-game",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mobile-first physical math card game controller; vanilla JS, no build required",
+  "scripts": { "test": "node --test tests/*.test.mjs" }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Truy Tìm Biểu Thức — Game Master",
+  "short_name": "Truy Biểu Thức",
+  "description": "Rút thẻ, đếm giờ và chấm điểm cho trò chơi toán ngoài đời thực",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090d19",
+  "theme_color": "#090d19",
+  "icons": [{"src":"./assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
