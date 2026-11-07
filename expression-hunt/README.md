@@ -45,3 +45,7 @@ node --test tests/*.test.mjs
 ### GitHub Pages
 
 Đặt toàn bộ thư mục này trong `expression-hunt/` thuộc repo đang xuất bản GitHub Pages ở thư mục gốc. Trang nằm tại `/expression-hunt/`, không ảnh hưởng ứng dụng hiện có ở `/`.
+
+### Chấm điểm sau khi hết giờ
+
+Đồng hồ vẫn dừng ở **00:00** nhưng gác trạm tiếp tục chọn **ĐÚNG** hoặc **SAI** như bình thường; chọn ĐÚNG vẫn nhận 10/20/30 điểm theo cấp. Thời gian được lưu tối đa 30 giây. Không tự chuyển cấp.
